@@ -14,7 +14,7 @@
 (defun sethash (entry)
     (when (null (nth-value 1 (gethash entry *results*)))
         (setf (gethash entry *results*) entry)
-        (print entry)))
+        (format t "~a~%" entry)))
 
 (defun get-robots (host)
     (let* ((query (concatenate 'string host "/robots.txt"))
@@ -30,7 +30,7 @@
 (defun parse-robots (host)
     (let ((snapshots (get-robots host)))
         (if (null snapshots)
-            (print "Nothing was found")
+            (format t "Nothing was found~%")
             (progn
                 (loop for snapshot in snapshots do
                   (let* ((robots (dex:get (format nil "~a/~a/~a" "https://web.archive.org/web" (car snapshot) (cadr snapshot))))
