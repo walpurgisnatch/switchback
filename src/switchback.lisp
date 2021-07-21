@@ -33,7 +33,9 @@
             (format t "Nothing was found~%")
             (progn
                 (loop for snapshot in snapshots do
-                  (let* ((robots (dex:get (format nil "~a/~a/~a" "https://web.archive.org/web" (car snapshot) (cadr snapshot))))
+                  (let* ((robots (handler-bind
+                                     ((dex:http-request-not-found #'dex:ignore-and-continue))
+                                     (dex:get (format nil "~a/~a/~a" "https://web.archive.org/web" (car snapshot) (cadr snapshot)))))
                          (urls (all-matches-as-strings "Disallow: .*" robots)))
-                          (loop for url in urls do
-                            (sethash (string-trim '(#\^M) (string-trim "Disallow: " url))))))))))
+                      (loop for url in urls do
+                        (sethash (string-trim '(#\^M) (string-trim "Disallow: " url))))))))))
